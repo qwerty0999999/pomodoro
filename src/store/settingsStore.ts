@@ -7,7 +7,6 @@ export interface Settings {
   soundEnabled: boolean;
   autoStartBreak: boolean;
   dailyGoalHours: number;
-  theme: 'dark' | 'light';
 }
 
 const DEFAULTS: Settings = {
@@ -17,7 +16,6 @@ const DEFAULTS: Settings = {
   soundEnabled: true,
   autoStartBreak: false,
   dailyGoalHours: 4,
-  theme: 'dark',
 };
 
 interface SettingsStore {
@@ -33,7 +31,7 @@ export const useSettingsStore = create<SettingsStore>((set, get) => ({
 
   loadSettings: () => {
     if (typeof window === 'undefined') return;
-    
+
     const saved = localStorage.getItem('study-flow-settings');
     if (saved) {
       try {

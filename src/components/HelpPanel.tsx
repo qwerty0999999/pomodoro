@@ -98,22 +98,21 @@ const tutorials: Tutorial[] = [
   },
 ];
 
-export default function HelpPanel() {
-  const [isOpen, setIsOpen] = useState(false);
+interface HelpPanelProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
   const [selectedTutorial, setSelectedTutorial] = useState<Tutorial | null>(null);
+
+  const handleClose = () => {
+    onClose();
+    setSelectedTutorial(null);
+  };
 
   return (
     <div className="relative">
-      {/* Help Button - Hidden on large desktop (2xl and up) */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="hidden lg:block fixed bottom-6 right-6 p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full shadow-lg hover:shadow-xl transition-shadow z-50"
-      >
-        <HelpCircle className="w-6 h-6 text-white" />
-      </motion.button>
-
       {/* Help Modal */}
       <AnimatePresence>
         {isOpen && (
@@ -122,38 +121,33 @@ export default function HelpPanel() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => {
-                setIsOpen(false);
-                setSelectedTutorial(null);
-              }}
+              onClick={handleClose}
               className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
             />
 
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="fixed bottom-6 right-6 w-96 bg-slate-800 border border-slate-700 rounded-lg shadow-2xl z-50 max-h-[80vh] overflow-hidden flex flex-col"
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.1 }}
+              className="fixed lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-full lg:max-w-2xl bottom-20 left-4 right-4 w-auto bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 max-h-[80vh] overflow-hidden flex flex-col"
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-cyan-500 to-blue-500 p-4 flex items-center justify-between">
-                <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  <HelpCircle className="w-5 h-5" />
+              <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-white/10 bg-slate-800">
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                  <HelpCircle className="w-5 h-5 text-cyan-400" />
                   Bantuan & Tutorial
                 </h3>
                 <button
-                  onClick={() => {
-                    setIsOpen(false);
-                    setSelectedTutorial(null);
-                  }}
-                  className="p-1 hover:bg-white/20 rounded-lg transition"
+                  onClick={handleClose}
+                  className="p-1 hover:bg-slate-700 rounded-lg transition"
                 >
-                  <X className="w-5 h-5 text-white" />
+                  <X size={20} className="text-gray-400 hover:text-white" />
                 </button>
               </div>
 
               {/* Content */}
-              <div className="p-6 overflow-y-auto flex-1">
+              <div className="flex-1 p-6 overflow-y-auto custom-scrollbar">
                 {!selectedTutorial ? (
                   // Tutorial List
                   <div className="space-y-3">

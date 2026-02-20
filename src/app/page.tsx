@@ -9,17 +9,17 @@ import ReportPanel from '@/components/ReportPanel';
 import HelpPanel from '@/components/HelpPanel';
 import BottomNavigation from '@/components/BottomNavigation';
 import { motion } from 'framer-motion';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { Settings, BarChart3, HelpCircle } from 'lucide-react';
 
 export default function Home() {
   const [showButtons, setShowButtons] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
   const [activeTab, setActiveTab] = useState<'report' | 'settings' | 'help' | null>(null);
-  
-  const reportRef = useRef<{ setIsOpen: (open: boolean) => void }>(null);
-  const settingsRef = useRef<{ setIsOpen: (open: boolean) => void }>(null);
-  const helpRef = useRef<{ setIsOpen: (open: boolean) => void }>(null);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,79 +69,97 @@ export default function Home() {
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 flex-shrink-0"
+          className="mb-4 flex-shrink-0 flex items-start justify-between"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-2 h-6 bg-gradient-to-b from-blue-400 to-emerald-400 rounded"></div>
-            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-              Study-Flow
-            </h1>
+          <div>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-2 h-6 bg-gradient-to-b from-blue-400 to-emerald-400 rounded"></div>
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                Study-Flow
+              </h1>
+            </div>
+            <p className="text-gray-400 text-sm md:text-base">
+              Dashboard Fokus Produktivitas Cerdas untuk Mahasiswa IT
+            </p>
           </div>
-          <p className="text-gray-400 text-sm md:text-base">
-            Dashboard Fokus Produktivitas Cerdas untuk Mahasiswa IT
-          </p>
+
+          {/* Action Buttons (Desktop only, mobile uses BottomNavigation) */}
+          <div className="hidden md:flex items-center gap-3">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsReportOpen(true)}
+              className="p-3 bg-slate-800/50 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition shadow-lg text-blue-400"
+              title="Laporan"
+            >
+              <BarChart3 className="w-5 h-5" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsSettingsOpen(true)}
+              className="p-3 bg-slate-800/50 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition shadow-lg text-cyan-400"
+              title="Pengaturan"
+            >
+              <Settings className="w-5 h-5" />
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setIsHelpOpen(true)}
+              className="p-3 bg-slate-800/50 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition shadow-lg text-purple-400"
+              title="Bantuan"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </motion.button>
+          </div>
         </motion.header>
 
         {/* Main Grid Layout - Full Height */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-1 overflow-hidden">
-          {/* Left Sidebar - Pomodoro & Spotify */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className="lg:col-span-1 overflow-y-auto scrollbar-hide"
-          >
-            <div className="space-y-4 pr-2">
-              <PomodoroTimer />
-              <SpotifyPlayer />
-            </div>
-          </motion.div>
-
-          {/* Right Content - Statistics & Matrix */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-3 overflow-y-auto scrollbar-hide"
-          >
-            <div className="space-y-4 pr-2">
-              {/* Statistics Panel */}
-              <StatisticsPanel />
-
-              {/* Matrix Section */}
-              <div>
-                <h2 className="text-2xl font-bold mb-1">📋 Matrix Eisenhower</h2>
-                <p className="text-gray-400 text-sm mb-3">
-                  Prioritaskan tugas berdasarkan tingkat kepentingan dan urgency.
-                </p>
+        <div className="flex-1 overflow-y-auto lg:overflow-hidden custom-scrollbar pb-24 lg:pb-0">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 pb-4 lg:h-full">
+            {/* Left Sidebar - Pomodoro & Spotify */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 }}
+              className="lg:col-span-1 lg:overflow-y-auto scrollbar-hide"
+            >
+              <div className="space-y-4 pr-2">
+                <PomodoroTimer />
+                <SpotifyPlayer />
               </div>
-              <EisenhowerMatrix />
-            </div>
-          </motion.div>
+            </motion.div>
+
+            {/* Right Content - Statistics & Matrix */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="lg:col-span-3 lg:overflow-y-auto scrollbar-hide"
+            >
+              <div className="space-y-4 pr-2">
+                {/* Statistics Panel */}
+                <StatisticsPanel />
+
+                {/* Matrix Section */}
+                <div>
+                  <h2 className="text-2xl font-bold mb-1">📋 Matrix Eisenhower</h2>
+                  <p className="text-gray-400 text-sm mb-3">
+                    Prioritaskan tugas berdasarkan tingkat kepentingan dan urgency.
+                  </p>
+                </div>
+                <EisenhowerMatrix />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* Desktop: Settings Panel - Always visible */}
-      <div className="hidden md:block">
-        <SettingsPanel />
-      </div>
-
-      {/* Desktop: Report Panel - Always visible */}
-      <div className="hidden md:block">
-        <ReportPanel />
-      </div>
-
-      {/* Desktop: Help Panel - Always visible */}
-      <div className="hidden md:block">
-        <HelpPanel />
-      </div>
-
-      {/* Mobile: All panels */}
-      <div className="md:hidden">
-        {activeTab === 'settings' && <SettingsPanel />}
-        {activeTab === 'report' && <ReportPanel />}
-        {activeTab === 'help' && <HelpPanel />}
-      </div>
+      {/* Modals */}
+      <SettingsPanel isOpen={isSettingsOpen || activeTab === 'settings'} onClose={() => { setIsSettingsOpen(false); setActiveTab(null); }} />
+      <ReportPanel isOpen={isReportOpen || activeTab === 'report'} onClose={() => { setIsReportOpen(false); setActiveTab(null); }} />
+      <HelpPanel isOpen={isHelpOpen || activeTab === 'help'} onClose={() => { setIsHelpOpen(false); setActiveTab(null); }} />
 
       {/* Mobile: Bottom Navigation */}
       <BottomNavigation

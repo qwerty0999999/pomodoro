@@ -31,13 +31,10 @@ export default function RootLayout({
   }, [loadSettings]);
 
   return (
-    <html lang="en" className={settings.theme === 'light' ? 'light' : ''}>
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${
-          settings.theme === 'light'
-            ? 'bg-white text-black'
-            : 'bg-slate-900 text-white'
-        }`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-900 text-white transition-colors duration-300`}
+        suppressHydrationWarning
       >
         {children}
       </body>

@@ -4,23 +4,25 @@ interface UseTimerOptions {
   initialMinutes?: number;
   initialSeconds?: number;
   onComplete?: () => void;
+  resetDependency?: any;
 }
 
 export const useTimer = ({
   initialMinutes = 25,
   initialSeconds = 0,
   onComplete,
+  resetDependency,
 }: UseTimerOptions = {}) => {
   const [minutes, setMinutes] = useState(initialMinutes);
   const [seconds, setSeconds] = useState(initialSeconds);
   const [isActive, setIsActive] = useState(false);
 
-  // Update timer when initialMinutes changes (for mode switching)
+  // Update timer when initialMinutes or resetDependency changes (for mode switching)
   useEffect(() => {
     setMinutes(initialMinutes);
-    setSeconds(0);
+    setSeconds(initialSeconds);
     setIsActive(false);
-  }, [initialMinutes]);
+  }, [initialMinutes, initialSeconds, resetDependency]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;

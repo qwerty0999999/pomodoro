@@ -104,20 +104,18 @@ export default function EisenhowerMatrix() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => toggleTask(task.id)}
-                      className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition ${
-                        task.isCompleted
-                          ? 'bg-green-500 border-green-500'
-                          : 'border-current border-opacity-50'
-                      }`}
+                      className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition ${task.isCompleted
+                        ? 'bg-green-500 border-green-500'
+                        : 'border-current border-opacity-50'
+                        }`}
                     >
                       {task.isCompleted && <Check size={12} />}
                     </motion.button>
                     <span
-                      className={`flex-1 text-xs truncate transition ${
-                        task.isCompleted
-                          ? 'line-through text-gray-500'
-                          : 'text-gray-200'
-                      }`}
+                      className={`flex-1 text-xs truncate transition ${task.isCompleted
+                        ? 'line-through text-gray-500'
+                        : 'text-gray-200'
+                        }`}
                     >
                       {task.title}
                     </span>
@@ -135,8 +133,8 @@ export default function EisenhowerMatrix() {
             </div>
 
             {/* Add Task Input */}
-            <div className="space-y-1.5 pt-2 border-t border-current border-opacity-20">
-              <div className="flex gap-1.5">
+            <div className="space-y-1.5 pt-2 border-t border-current border-opacity-20 mt-auto">
+              <div className="flex gap-2">
                 <input
                   type="text"
                   placeholder="Tambah tugas..."
@@ -152,15 +150,16 @@ export default function EisenhowerMatrix() {
                       handleAddTask(q.id, q.importance, q.urgency);
                     }
                   }}
-                  className="flex-1 px-2 py-1 text-xs bg-slate-700/50 border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 transition"
+                  className="flex-1 px-3 py-1.5 text-xs bg-slate-800/80 text-white border border-slate-600 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner placeholder-slate-500 dark:placeholder-gray-500"
                 />
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
                   onClick={() => handleAddTask(q.id, q.importance, q.urgency)}
-                  className="p-1 bg-blue-600/50 hover:bg-blue-600 rounded-lg transition"
+                  className="px-3 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors flex items-center justify-center shadow-md"
+                  disabled={!newTaskTitles[q.id]?.trim()}
                 >
-                  <Plus size={14} />
+                  <Plus size={16} className={!newTaskTitles[q.id]?.trim() ? 'opacity-50' : 'text-white'} />
                 </motion.button>
               </div>
             </div>

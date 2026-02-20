@@ -2,16 +2,25 @@
 
 import { motion } from 'framer-motion';
 import { BarChart3, TrendingUp, Calendar, Target, X, Clock, Zap, Coffee } from 'lucide-react';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSessionStore, PomodoroSession } from '@/store/sessionStore';
 import { useSettingsStore } from '@/store/settingsStore';
 
-export default function ReportPanel() {
-  const [isOpen, setIsOpen] = useState(false);
+interface ReportPanelProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function ReportPanel({ isOpen, onClose }: ReportPanelProps) {
+  const [isHydrated, setIsHydrated] = useState(false);
   const [activeTab, setActiveTab] = useState<'goal' | 'weekly' | 'monthly' | 'history'>('goal');
   const { getWeeklyStats, getMonthlyStats, getCategoryStats, sessions } = useSessionStore();
   const { getTodayFocusTime } = useSessionStore();
   const { settings } = useSettingsStore();
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const todayFocusHours = Math.round((getTodayFocusTime() / 60) * 10) / 10;
   const goalProgress = Math.min((todayFocusHours / settings.dailyGoalHours) * 100, 100);
@@ -48,105 +57,90 @@ export default function ReportPanel() {
 
   return (
     <div className="relative">
-      {/* Report Button - Hidden on large desktop (2xl and up) */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className="hidden lg:block fixed bottom-48 right-6 p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full shadow-lg hover:shadow-xl transition-shadow z-50"
-      >
-        <BarChart3 className="w-6 h-6 text-white" />
-      </motion.button>
-
       {/* Report Modal */}
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={() => setIsOpen(false)}
+          onClick={onClose}
           className="fixed inset-0 bg-black/50 z-50 backdrop-blur-sm"
         />
       )}
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={isOpen ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ duration: 0.2 }}
-        className={`fixed bottom-48 right-6 w-[500px] max-h-[80vh] bg-slate-800 border border-slate-700 rounded-lg shadow-2xl overflow-hidden z-[51] ${
-          !isOpen && 'pointer-events-none'
-        }`}
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={isOpen ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ duration: 0.1 }}
+        className={`fixed lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-full lg:max-w-2xl bottom-20 left-4 right-4 w-auto max-h-[80vh] flex flex-col bg-slate-800 border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-[51] ${!isOpen && 'pointer-events-none'
+          }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-700 bg-gradient-to-r from-blue-900 to-cyan-900">
-          <h3 className="text-2xl font-bold flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-cyan-400" />
+        <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-white/10 bg-slate-800">
+          <h3 className="text-xl font-bold flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-cyan-400" />
             Laporan
           </h3>
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => setIsOpen(false)}
+            onClick={onClose}
             className="p-1 hover:bg-slate-700 rounded-lg transition"
           >
-            <X size={20} />
+            <X size={20} className="text-gray-400 hover:text-white" />
           </motion.button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex gap-2 p-4 border-b border-slate-700 bg-slate-750">
+        <div className="flex-shrink-0 flex gap-2 p-4 border-b border-slate-700 bg-slate-800/50">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveTab('goal')}
-            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'goal'
-                ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${activeTab === 'goal'
+              ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
+              : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+              }`}
           >
             <Target size={16} />
-            Target Harian
+            <span className="hidden sm:inline">Target Harian</span>
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveTab('weekly')}
-            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'weekly'
-                ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50'
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${activeTab === 'weekly'
+              ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/50'
+              : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+              }`}
           >
             <TrendingUp size={16} />
-            Mingguan
+            <span className="hidden sm:inline">Mingguan</span>
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveTab('monthly')}
-            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'monthly'
-                ? 'bg-violet-500/20 text-violet-400 border border-violet-500/50'
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${activeTab === 'monthly'
+              ? 'bg-violet-500/20 text-violet-400 border border-violet-500/50'
+              : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+              }`}
           >
             <Calendar size={16} />
-            Bulanan
+            <span className="hidden sm:inline">Bulanan</span>
           </motion.button>
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => setActiveTab('history')}
-            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-              activeTab === 'history'
-                ? 'bg-purple-500/20 text-purple-400 border border-purple-500/50'
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-            }`}
+            className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${activeTab === 'history'
+              ? 'bg-purple-500/20 text-purple-400 border border-purple-500/50'
+              : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+              }`}
           >
             <Clock size={16} />
-            Riwayat
+            <span className="hidden sm:inline">Riwayat</span>
           </motion.button>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(80vh-200px)]" suppressHydrationWarning>
+        <div className="flex-1 p-6 overflow-y-auto custom-scrollbar min-h-0" suppressHydrationWarning>
           {/* Daily Goal Tab */}
           {activeTab === 'goal' && (
             <motion.div
@@ -158,7 +152,7 @@ export default function ReportPanel() {
                 <Target size={20} />
                 Target Harian
               </h4>
-              
+
               <div className="bg-gradient-to-br from-yellow-900/30 to-orange-900/30 p-6 rounded-xl border border-yellow-500/30">
                 <div className="flex items-center justify-between mb-4">
                   <div>
@@ -170,7 +164,7 @@ export default function ReportPanel() {
                     <p className="text-3xl font-bold text-yellow-300">{settings.dailyGoalHours}h</p>
                   </div>
                 </div>
-                
+
                 <div className="w-full bg-slate-700 rounded-full h-4 overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}
@@ -179,7 +173,7 @@ export default function ReportPanel() {
                     className="h-full bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"
                   />
                 </div>
-                
+
                 <p className="text-sm text-gray-400 mt-4 text-center">
                   {goalProgress >= 100
                     ? '✨ Target tercapai! Bagus sekali!'
@@ -200,7 +194,7 @@ export default function ReportPanel() {
                 <TrendingUp size={20} />
                 Statistik Mingguan (7 Hari Terakhir)
               </h4>
-              
+
               <div className="bg-gradient-to-br from-cyan-900/30 to-blue-900/30 p-6 rounded-xl border border-cyan-500/30">
                 <div className="flex items-end justify-between gap-2 h-32">
                   {weeklyStats.map((stat, idx) => (
@@ -239,7 +233,7 @@ export default function ReportPanel() {
                 <Calendar size={20} />
                 Statistik Bulanan (4 Minggu Terakhir)
               </h4>
-              
+
               <div className="bg-gradient-to-br from-violet-900/30 to-purple-900/30 p-6 rounded-xl border border-violet-500/30 space-y-4">
                 {monthlyStats.map((stat, idx) => (
                   <div key={idx}>
@@ -323,7 +317,7 @@ export default function ReportPanel() {
           )}
 
           {/* Category Stats */}
-          {categoryStats.length > 0 && (
+          {isHydrated && categoryStats.length > 0 && (
             <div suppressHydrationWarning className="mt-6 pt-6 border-t border-slate-700">
               <motion.div
                 initial={{ opacity: 0, y: 10 }}

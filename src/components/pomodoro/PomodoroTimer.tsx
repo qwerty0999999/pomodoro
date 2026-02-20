@@ -79,7 +79,7 @@ export default function PomodoroTimer() {
     if (isWorkMode) {
       // Work session completed
       newCycleCount = cycleCount + 1;
-      
+
       if (newCycleCount % 4 === 0) {
         // After 4 work sessions, take long break
         newMode = 'longBreak';
@@ -130,10 +130,10 @@ export default function PomodoroTimer() {
       setShowCompletionModal(false);
       setMode(newMode);
       setCycleCount(newCycleCount);
-      
-      // Auto-start break after work session completes
+
+      // Auto-start break after work session completes IF setting is enabled
       // Don't auto-start work session (user must click start)
-      if (isWorkMode) {
+      if (isWorkMode && settings.autoStartBreak) {
         setIsAutoStarting(true);
       }
     }, 3000);
@@ -143,6 +143,7 @@ export default function PomodoroTimer() {
   const timer = useTimer({
     initialMinutes: mode === 'work' ? workDuration : mode === 'break' ? breakDuration : longBreakDuration,
     onComplete: handleTimerComplete,
+    resetDependency: mode,
   });
 
   // Keyboard shortcuts
@@ -239,161 +240,95 @@ export default function PomodoroTimer() {
         animate={{ opacity: 1, scale: 1 }}
         className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 text-center shadow-2xl"
       >
-      <h2 className="text-lg font-semibold mb-3">
-        {mode === 'work' ? '🎯 Fokus' : mode === 'break' ? '☕ Istirahat' : '🎉 Istirahat Panjang'}
-      </h2>
+        <h2 className="text-lg font-semibold mb-3">
+          {mode === 'work' ? '🎯 Fokus' : mode === 'break' ? '☕ Istirahat' : '🎉 Istirahat Panjang'}
+        </h2>
 
-      {/* Category Selector - Always Visible */}
-      <div className="mb-4 p-3 bg-slate-700 rounded-lg">
-        <label className="block text-xs font-medium mb-2 text-gray-300">Kategori Kerja</label>
-        <div className="flex gap-1 flex-wrap justify-center">
-          {(['kerja', 'belajar', 'project', 'meeting', 'lainnya'] as SessionCategory[]).map((cat) => (
-            <motion.button
-              key={cat}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-2 py-1 rounded text-xs font-medium transition-all ${
-                selectedCategory === cat
+        {/* Category Selector - Always Visible */}
+        <div className="mb-4 p-3 bg-slate-700 rounded-lg">
+          <label className="block text-xs font-medium mb-2 text-gray-300">Kategori Kerja</label>
+          <div className="flex gap-1 flex-wrap justify-center">
+            {(['kerja', 'belajar', 'project', 'meeting', 'lainnya'] as SessionCategory[]).map((cat) => (
+              <motion.button
+                key={cat}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-1.5 md:px-2 py-1 rounded text-[10px] md:text-xs font-medium transition-all ${selectedCategory === cat
                   ? 'bg-emerald-500 text-white'
                   : 'bg-slate-600 text-gray-300 hover:bg-slate-500'
-              }`}
-            >
-              {cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </motion.button>
-          ))}
+                  }`}
+              >
+                {cat.charAt(0).toUpperCase() + cat.slice(1)}
+              </motion.button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="mb-3 text-xs text-gray-400">
-        <p>
-          {mode === 'work'
-            ? `${workDuration}m (${cycleCount + 1}/4) - ${selectedCategory}`
-            : mode === 'break'
-            ? `${breakDuration} menit`
-            : `${longBreakDuration} menit`}
-        </p>
-      </div>
+        <div className="mb-3 text-xs text-gray-400">
+          <p>
+            {mode === 'work'
+              ? `${workDuration}m (${cycleCount + 1}/4) - ${selectedCategory}`
+              : mode === 'break'
+                ? `${breakDuration} menit`
+                : `${longBreakDuration} menit`}
+          </p>
+        </div>
 
-      <motion.div
-        animate={{
-          scale: timer.isActive ? [1, 1.02, 1] : 1,
-        }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="text-5xl font-mono font-bold mb-4 text-transparent bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-400 bg-clip-text"
-      >
-        {String(timer.minutes).padStart(2, '0')}:
-        {String(timer.seconds).padStart(2, '0')}
-      </motion.div>
-
-      {/* Timer Controls */}
-      <div className="flex justify-center gap-2 mb-4">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={timer.toggleTimer}
-          className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full transition shadow-lg"
-        >
-          {timer.isActive ? <Pause size={18} /> : <Play size={18} />}
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={timer.resetTimer}
-          className="p-2 bg-gray-600 hover:bg-gray-700 rounded-full transition shadow-lg"
-        >
-          <RotateCcw size={18} />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => {
-            timer.resetTimer();
-            const newMode = mode === 'work' ? 'break' : 'work';
-            setMode(newMode);
+        <motion.div
+          animate={{
+            scale: timer.isActive ? [1, 1.02, 1] : 1,
           }}
-          className="p-2 bg-orange-600 hover:bg-orange-700 rounded-full transition shadow-lg"
-          title="Skip"
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-5xl font-mono font-bold mb-4 text-transparent bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-400 bg-clip-text"
         >
-          <SkipForward size={18} />
+          {String(timer.minutes).padStart(2, '0')}:
+          {String(timer.seconds).padStart(2, '0')}
+        </motion.div>
+
+        {/* Timer Controls */}
+        <div className="flex justify-center gap-2 mb-4">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={timer.toggleTimer}
+            className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full transition shadow-lg"
+          >
+            {timer.isActive ? <Pause size={18} /> : <Play size={18} />}
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={timer.resetTimer}
+            className="p-2 bg-gray-600 hover:bg-gray-700 rounded-full transition shadow-lg"
+          >
+            <RotateCcw size={18} />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              timer.resetTimer();
+              const newMode = mode === 'work' ? 'break' : 'work';
+              setMode(newMode);
+            }}
+            className="p-2 bg-orange-600 hover:bg-orange-700 rounded-full transition shadow-lg"
+            title="Skip"
+          >
+            <SkipForward size={18} />
+          </motion.button>
+        </div>
+
+        {/* Mode Switch */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={handleSwitchMode}
+          className="w-full py-1.5 px-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-medium mb-4 transition text-sm"
+        >
+          Ganti ke {mode === 'work' ? 'Istirahat' : 'Kerja'}
         </motion.button>
-      </div>
 
-      {/* Mode Switch */}
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={handleSwitchMode}
-        className="w-full py-1.5 px-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-medium mb-4 transition text-sm"
-      >
-        Ganti ke {mode === 'work' ? 'Istirahat' : 'Kerja'}
-      </motion.button>
-
-      {/* Duration Settings */}
-      <div className="space-y-2 pt-4 border-t border-slate-700 text-xs">
-        <div className="flex items-center justify-between">
-          <span className="text-gray-400">Kerja (menit)</span>
-          <div className="flex items-center gap-1">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setWorkDuration(Math.max(1, workDuration - 1))}
-              className="p-1 bg-slate-700 hover:bg-slate-600 rounded"
-            >
-              <Minus size={14} />
-            </motion.button>
-            <span className="w-6 text-center font-semibold text-xs">{workDuration}</span>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setWorkDuration(workDuration + 1)}
-              className="p-1 bg-slate-700 hover:bg-slate-600 rounded"
-            >
-              <Plus size={14} />
-            </motion.button>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-gray-400">Istirahat (menit)</span>
-          <div className="flex items-center gap-1">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setBreakDuration(Math.max(1, breakDuration - 1))}
-              className="p-1 bg-slate-700 hover:bg-slate-600 rounded"
-            >
-              <Minus size={14} />
-            </motion.button>
-            <span className="w-6 text-center font-semibold text-xs">{breakDuration}</span>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setBreakDuration(breakDuration + 1)}
-              className="p-1 bg-slate-700 hover:bg-slate-600 rounded"
-            >
-              <Plus size={14} />
-            </motion.button>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-gray-400">Istirahat Panjang (menit)</span>
-          <div className="flex items-center gap-1">
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setLongBreakDuration(Math.max(1, longBreakDuration - 1))}
-              className="p-1 bg-slate-700 hover:bg-slate-600 rounded"
-            >
-              <Minus size={14} />
-            </motion.button>
-            <span className="w-6 text-center font-semibold text-xs">{longBreakDuration}</span>
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setLongBreakDuration(longBreakDuration + 1)}
-              className="p-1 bg-slate-700 hover:bg-slate-600 rounded"
-            >
-              <Plus size={14} />
-            </motion.button>
-          </div>
-        </div>
-      </div>
-    </motion.div>
+      </motion.div>
     </>
   );
 }

@@ -107,10 +107,10 @@ Semua data disimpan di browser's localStorage:
 - **Background:** Slate gradient (dark theme)
 
 ### Responsive
-- Mobile-first design
-- Optimized for all screen sizes
-- Touch-friendly interface
-- Adaptive grid layout
+### Features Highlight
+- **No Clutter Header:** Unified top navigation for Settings, Reports, and Help menus.
+- **Mobile First Focus:** Custom smart-scroll and touch-friendly targets ensure that focus sessions run seamlessly on your phone.
+- **Dark Mode Native:** Deep slate and neon gradient themes keep eyes relaxed during long night sessions.
 
 ## 🔧 Technology Stack
 
@@ -203,9 +203,9 @@ src/
 │   ├── task/EisenhowerMatrix.tsx
 │   ├── audio/AmbientSoundMixer.tsx
 │   ├── StatisticsPanel.tsx
-│   ├── SessionHistory.tsx
 │   ├── SettingsPanel.tsx
-│   ├── BackupPanel.tsx
+│   ├── ReportPanel.tsx
+│   ├── BottomNavigation.tsx
 │   └── HelpPanel.tsx
 ├── hooks/
 │   └── useTimer.ts
