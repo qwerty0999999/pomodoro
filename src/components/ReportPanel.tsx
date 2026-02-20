@@ -31,6 +31,7 @@ export default function ReportPanel({ isOpen, onClose }: ReportPanelProps) {
   // Session history
   const history = useMemo(() => {
     return [...sessions].reverse().slice(0, 10);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessions]);
 
   const formatDate = (dateString: string) => {

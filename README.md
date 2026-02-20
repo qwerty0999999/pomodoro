@@ -15,12 +15,12 @@ Aplikasi web modern yang menggabungkan Pomodoro Timer, Ambient Sound Mixer, dan 
 - 🎮 Play/Pause/Reset controls
 - 🔄 Mode switcher (Kerja ↔ Istirahat)
 
-### 🎵 Ambient Sound Mixer
-- 🌧️ 4 ambient sounds: Hujan, Kafe, Hutan, White Noise
-- 🔊 Volume control individual (0-100%) untuk setiap track
-- 🎼 Multiple simultaneous playback
-- 🎯 Visual gradient feedback
-- ⚡ Smooth transitions
+### 🎵 Spotify Player
+- � Embedded Spotify web player integration
+- � Akses langsung ke playlist lofi/belajar
+- � Kontrol musik langsung dari dashboard
+- 🎯 Visual overlay yang terintegrasi dengan tema gelap
+- ⚡ Lightweight iframe loading
 
 ### 📋 Eisenhower Matrix
 - **Q1 (Merah):** Penting & Urgent → Kerjakan Sekarang
@@ -79,7 +79,7 @@ npm start
 | Feature | Status | Details |
 |---------|--------|---------|
 | Pomodoro Timer | ✅ | Customizable, with alarm & notifications |
-| Ambient Sounds | ✅ | 4 tracks with individual volume control |
+| Spotify Player | ✅ | Embedded lofi & study playlists |
 | Eisenhower Matrix | ✅ | Full 4-quadrant task management |
 | Statistics | ✅ | Real-time productivity metrics |
 | Session History | ✅ | Track last 10 sessions |
@@ -146,14 +146,14 @@ Semua data disimpan di browser's localStorage:
 
 ### Work Session
 1. Click Play on Pomodoro Timer
-2. Select ambient sound (optional)
+2. Play your favorite Spotify study playlist
 3. Work until alarm sounds
 4. Session auto-tracks in history
 5. Check statistics update
 
 ### Break Time
 1. Timer switches to break mode
-2. Take 5-minute break
+2. Take a 5-minute break and relax
 3. Return for next session
 
 ### Evening Review
@@ -165,7 +165,7 @@ Semua data disimpan di browser's localStorage:
 ## 💡 Tips for Maximum Productivity
 
 1. **Start Simple:** Use default 25/5 durations
-2. **Combine Sounds:** Mix 2-3 ambient tracks
+2. **Set the Mood:** Pick a good lofi playlist on the Spotify player
 3. **Regular Reviews:** Check statistics weekly
 4. **Consistent Usage:** Build daily habit
 5. **Adjust Durations:** Customize based on your workflow
@@ -201,7 +201,7 @@ src/
 ├── components/
 │   ├── pomodoro/PomodoroTimer.tsx
 │   ├── task/EisenhowerMatrix.tsx
-│   ├── audio/AmbientSoundMixer.tsx
+│   ├── audio/SpotifyPlayer.tsx
 │   ├── StatisticsPanel.tsx
 │   ├── SettingsPanel.tsx
 │   ├── ReportPanel.tsx
@@ -212,7 +212,7 @@ src/
 └── store/
     ├── taskStore.ts
     ├── sessionStore.ts
-    └── audioStore.ts
+    └── settingsStore.ts
 ```
 
 ## 🚀 Performance
@@ -252,7 +252,7 @@ src/
 Dirancang khusus untuk mahasiswa dengan kebutuhan:
 - ✅ Flexibility untuk berbagai durasi tugas
 - ✅ Multiple task prioritization methods
-- ✅ Focus-enhancing ambient sounds
+- ✅ Focus-enhancing music integration via Spotify
 - ✅ Tracking & analytics for self-improvement
 - ✅ Zero configuration - works out of the box
 

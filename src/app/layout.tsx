@@ -20,7 +20,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { settings, loadSettings } = useSettingsStore();
+  const { loadSettings } = useSettingsStore();
   const hasLoadedRef = useRef(false);
 
   useEffect(() => {

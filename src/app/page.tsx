@@ -2,7 +2,7 @@
 
 import PomodoroTimer from '@/components/pomodoro/PomodoroTimer';
 import EisenhowerMatrix from '@/components/task/EisenhowerMatrix';
-import SpotifyPlayer from '@/components/audio/AmbientSoundMixer';
+import SpotifyPlayer from '@/components/audio/SpotifyPlayer';
 import StatisticsPanel from '@/components/StatisticsPanel';
 import SettingsPanel from '@/components/SettingsPanel';
 import ReportPanel from '@/components/ReportPanel';

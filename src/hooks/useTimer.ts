@@ -22,6 +22,7 @@ export const useTimer = ({
     setMinutes(initialMinutes);
     setSeconds(initialSeconds);
     setIsActive(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMinutes, initialSeconds, resetDependency]);
 
   useEffect(() => {
