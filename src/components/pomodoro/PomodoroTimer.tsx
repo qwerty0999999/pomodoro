@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, RotateCcw, Plus, Minus, CheckCircle, SkipForward } from 'lucide-react';
+import { Play, Pause, RotateCcw, CheckCircle, SkipForward } from 'lucide-react';
 import { useTimer } from '@/hooks/useTimer';
 import { useSessionStore, type SessionCategory } from '@/store/sessionStore';
 import { useSettingsStore } from '@/store/settingsStore';
@@ -10,7 +10,7 @@ import { useSettingsStore } from '@/store/settingsStore';
 export default function PomodoroTimer() {
   const [workDuration, setWorkDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
-  const [longBreakDuration, setLongBreakDuration] = useState(15);
+  const longBreakDuration = 15;
   const [mode, setMode] = useState<'work' | 'break' | 'longBreak'>('work');
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [completionMessage, setCompletionMessage] = useState('');
@@ -206,7 +206,7 @@ export default function PomodoroTimer() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.5, opacity: 0 }}
               transition={{ type: 'spring', damping: 15 }}
-              className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 max-w-md border-2 border-emerald-500 shadow-2xl"
+              className="bg-linear-to-br from-slate-800 to-slate-900 rounded-3xl p-8 max-w-md border-2 border-emerald-500 shadow-2xl"
             >
               <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
@@ -238,7 +238,7 @@ export default function PomodoroTimer() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="p-5 bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 text-center shadow-2xl"
+        className="p-5 bg-linear-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 text-center shadow-2xl"
       >
         <h2 className="text-lg font-semibold mb-3">
           {mode === 'work' ? '🎯 Fokus' : mode === 'break' ? '☕ Istirahat' : '🎉 Istirahat Panjang'}
@@ -279,7 +279,7 @@ export default function PomodoroTimer() {
             scale: timer.isActive ? [1, 1.02, 1] : 1,
           }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="text-5xl font-mono font-bold mb-4 text-transparent bg-gradient-to-r from-blue-400 via-emerald-400 to-blue-400 bg-clip-text"
+          className="text-5xl font-mono font-bold mb-4 text-transparent bg-linear-to-r from-blue-400 via-emerald-400 to-blue-400 bg-clip-text"
         >
           {String(timer.minutes).padStart(2, '0')}:
           {String(timer.seconds).padStart(2, '0')}
@@ -323,7 +323,7 @@ export default function PomodoroTimer() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={handleSwitchMode}
-          className="w-full py-1.5 px-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-medium mb-4 transition text-sm"
+          className="w-full py-1.5 px-3 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg font-medium mb-4 transition text-sm"
         >
           Ganti ke {mode === 'work' ? 'Istirahat' : 'Kerja'}
         </motion.button>
@@ -332,3 +332,5 @@ export default function PomodoroTimer() {
     </>
   );
 }
+
+

@@ -17,13 +17,11 @@ interface TaskStore {
   updateTask: (id: string, task: Partial<Task>) => void;
   toggleTask: (id: string) => void;
   clearTasks: () => void;
-  getTodayCompletedCount: () => number;
-  getTodayTasksCount: () => number;
 }
 
 export const useTaskStore = create<TaskStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       tasks: [],
       addTask: (task) =>
         set((state) => ({
@@ -31,7 +29,7 @@ export const useTaskStore = create<TaskStore>()(
             ...state.tasks,
             {
               ...task,
-              id: Math.random().toString(36).substr(2, 9),
+              id: crypto.randomUUID(),
               createdAt: new Date().toISOString(),
             },
           ],
@@ -53,20 +51,6 @@ export const useTaskStore = create<TaskStore>()(
           ),
         })),
       clearTasks: () => set({ tasks: [] }),
-      getTodayCompletedCount: () => {
-        const today = new Date().toDateString();
-        return get().tasks.filter(
-          (t) =>
-            t.isCompleted &&
-            new Date(t.createdAt).toDateString() === today
-        ).length;
-      },
-      getTodayTasksCount: () => {
-        const today = new Date().toDateString();
-        return get().tasks.filter(
-          (t) => new Date(t.createdAt).toDateString() === today
-        ).length;
-      },
     }),
     {
       name: 'task-store',

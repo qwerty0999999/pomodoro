@@ -23,7 +23,7 @@ export default function BottomNavigation({
       initial={{ y: 100 }}
       animate={{ y: showButtons ? 0 : 100 }}
       transition={{ duration: 0.3 }}
-      className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-slate-950 via-slate-900 to-slate-900/80 border-t border-slate-700 z-40 backdrop-blur-sm md:hidden"
+      className="fixed bottom-0 left-0 right-0 bg-linear-to-t from-slate-950 via-slate-900 to-slate-900/80 border-t border-slate-700 z-40 backdrop-blur-sm md:hidden"
     >
       <div className="flex justify-around items-center h-16 px-4">
         {/* Report Button */}
@@ -74,3 +74,5 @@ export default function BottomNavigation({
     </motion.div>
   );
 }
+
+

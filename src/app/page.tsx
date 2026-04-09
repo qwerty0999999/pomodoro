@@ -9,17 +9,14 @@ import ReportPanel from '@/components/ReportPanel';
 import HelpPanel from '@/components/HelpPanel';
 import BottomNavigation from '@/components/BottomNavigation';
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Settings, BarChart3, HelpCircle } from 'lucide-react';
 
 export default function Home() {
   const [showButtons, setShowButtons] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [activeTab, setActiveTab] = useState<'report' | 'settings' | 'help' | null>(null);
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isReportOpen, setIsReportOpen] = useState(false);
-  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,28 +33,26 @@ export default function Home() {
       setLastScrollY(currentScrollY);
 
       // Clear previous timeout
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
       }
 
       // Set timeout untuk menampilkan buttons setelah scroll berhenti
-      const timeout = setTimeout(() => {
+      scrollTimeoutRef.current = setTimeout(() => {
         setShowButtons(true);
       }, 800);
-
-      setScrollTimeout(timeout);
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
       }
     };
-  }, [lastScrollY, scrollTimeout]);
+  }, [lastScrollY]);
   return (
-    <main className="h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white overflow-hidden flex flex-col">
+    <main className="h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-800 text-white overflow-hidden flex flex-col">
       {/* Background Glow Effect */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
@@ -69,12 +64,12 @@ export default function Home() {
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 flex-shrink-0 flex items-start justify-between"
+          className="mb-4 shrink-0 flex items-start justify-between"
         >
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-2 h-6 bg-gradient-to-b from-blue-400 to-emerald-400 rounded"></div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              <div className="w-2 h-6 bg-linear-to-b from-blue-400 to-emerald-400 rounded"></div>
+              <h1 className="text-3xl md:text-4xl font-bold bg-linear-to-r from-blue-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">
                 Study-Flow
               </h1>
             </div>
@@ -88,7 +83,7 @@ export default function Home() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setIsReportOpen(true)}
+              onClick={() => setActiveTab('report')}
               className="p-3 bg-slate-800/50 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition shadow-lg text-blue-400"
               title="Laporan"
             >
@@ -97,7 +92,7 @@ export default function Home() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setIsSettingsOpen(true)}
+              onClick={() => setActiveTab('settings')}
               className="p-3 bg-slate-800/50 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition shadow-lg text-cyan-400"
               title="Pengaturan"
             >
@@ -106,7 +101,7 @@ export default function Home() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setIsHelpOpen(true)}
+              onClick={() => setActiveTab('help')}
               className="p-3 bg-slate-800/50 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition shadow-lg text-purple-400"
               title="Bantuan"
             >
@@ -157,9 +152,9 @@ export default function Home() {
       </div>
 
       {/* Modals */}
-      <SettingsPanel isOpen={isSettingsOpen || activeTab === 'settings'} onClose={() => { setIsSettingsOpen(false); setActiveTab(null); }} />
-      <ReportPanel isOpen={isReportOpen || activeTab === 'report'} onClose={() => { setIsReportOpen(false); setActiveTab(null); }} />
-      <HelpPanel isOpen={isHelpOpen || activeTab === 'help'} onClose={() => { setIsHelpOpen(false); setActiveTab(null); }} />
+      <SettingsPanel isOpen={activeTab === 'settings'} onClose={() => setActiveTab(null)} />
+      <ReportPanel isOpen={activeTab === 'report'} onClose={() => setActiveTab(null)} />
+      <HelpPanel isOpen={activeTab === 'help'} onClose={() => setActiveTab(null)} />
 
       {/* Mobile: Bottom Navigation */}
       <BottomNavigation
@@ -172,3 +167,5 @@ export default function Home() {
     </main>
   );
 }
+
+

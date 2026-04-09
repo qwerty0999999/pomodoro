@@ -4,19 +4,29 @@ import { motion } from 'framer-motion';
 import { Clock, CheckCircle, Zap, Flame } from 'lucide-react';
 import { useTaskStore } from '@/store/taskStore';
 import { useSessionStore } from '@/store/sessionStore';
+import { useMemo } from 'react';
 
 export default function StatisticsPanel() {
-  const { getTodayCompletedCount, getTodayTasksCount } = useTaskStore();
+  const tasks = useTaskStore((state) => state.tasks);
   const { getTodayFocusTime, getTodaySessionCount, getStreak } = useSessionStore();
 
   const todayFocusHours = Math.round((getTodayFocusTime() / 60) * 10) / 10;
   const streak = getStreak();
 
+  const taskStats = useMemo(() => {
+    const today = new Date().toDateString();
+    const todayTasks = tasks.filter((t) => new Date(t.createdAt).toDateString() === today);
+    return {
+      completed: todayTasks.filter((t) => t.isCompleted).length,
+      total: todayTasks.length,
+    };
+  }, [tasks]);
+
   const stats = [
     {
       icon: CheckCircle,
       label: 'Task Selesai Hari Ini',
-      value: `${getTodayCompletedCount()}/${getTodayTasksCount()}`,
+      value: `${taskStats.completed}/${taskStats.total}`,
       color: 'from-blue-500 to-blue-600',
     },
     {
@@ -56,7 +66,7 @@ export default function StatisticsPanel() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: idx * 0.1 }}
-              className={`bg-gradient-to-br ${stat.color} p-3 md:p-4 rounded-xl border border-white/10 shadow-lg`}
+              className={`bg-linear-to-br ${stat.color} p-3 md:p-4 rounded-xl border border-white/10 shadow-lg`}
             >
               <div className="flex items-start justify-between mb-2">
                 <Icon size={24} className="text-white/80" />
@@ -76,3 +86,4 @@ export default function StatisticsPanel() {
     </motion.div>
   );
 }
+

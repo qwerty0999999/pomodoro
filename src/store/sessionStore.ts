@@ -37,22 +37,22 @@ export const useSessionStore = create<SessionStore>()(
             ...state.sessions,
             {
               ...session,
-              id: Math.random().toString(36).substr(2, 9),
+              id: crypto.randomUUID(),
             },
           ],
         })),
       getTodaySessions: () => {
-        const today = new Date().toDateString();
+        const today = new Date().toISOString().split('T')[0];
         return get().sessions.filter((s) => s.date === today);
       },
       getTodayFocusTime: () => {
-        const today = new Date().toDateString();
+        const today = new Date().toISOString().split('T')[0];
         return get()
           .sessions.filter((s) => s.date === today && s.mode === 'work' && s.completed)
           .reduce((acc, s) => acc + s.duration, 0);
       },
       getTodaySessionCount: () => {
-        const today = new Date().toDateString();
+        const today = new Date().toISOString().split('T')[0];
         return get().sessions.filter(
           (s) => s.date === today && s.mode === 'work' && s.completed
         ).length;
@@ -77,19 +77,31 @@ export const useSessionStore = create<SessionStore>()(
         
         if (workSessions.length === 0) return 0;
 
+        // Ensure dates are in YYYY-MM-DD format for unique check
         const uniqueDates = [...new Set(workSessions.map((s) => s.date))].sort(
           (a, b) => new Date(b).getTime() - new Date(a).getTime()
         );
 
         let streak = 0;
-        const today = new Date();
+        const todayStr = new Date().toISOString().split('T')[0];
         
-        for (const date of uniqueDates) {
-          const sessionDate = new Date(date);
-          const expectedDate = new Date(today.getTime() - streak * 24 * 60 * 60 * 1000);
-          
-          if (sessionDate.toDateString() === expectedDate.toDateString()) {
+        // If no work session today, start checking from yesterday
+        let checkDate = new Date(todayStr);
+        if (uniqueDates[0] !== todayStr) {
+          // Check if the most recent session is yesterday
+          const yesterdayStr = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          if (uniqueDates[0] !== yesterdayStr) {
+            return 0; // Streak broken
+          }
+        }
+        
+        for (let i = 0; i < uniqueDates.length; i++) {
+          const expectedDateStr = new Date(new Date(todayStr).getTime() - i * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          if (uniqueDates[i] === expectedDateStr) {
             streak++;
+          } else if (i === 0 && uniqueDates[i] === new Date(new Date().getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0]) {
+             // If first date in uniqueDates is yesterday, we continue checking
+             streak++;
           } else {
             break;
           }
@@ -105,7 +117,7 @@ export const useSessionStore = create<SessionStore>()(
         for (let i = 6; i >= 0; i--) {
           const date = new Date();
           date.setDate(date.getDate() - i);
-          const dateStr = date.toDateString();
+          const dateStr = date.toISOString().split('T')[0];
           
           const dayFocusTime = get()
             .sessions.filter((s) => s.date === dateStr && s.mode === 'work' && s.completed)
@@ -129,7 +141,7 @@ export const useSessionStore = create<SessionStore>()(
           for (let j = 0; j < 7; j++) {
             const date = new Date();
             date.setDate(date.getDate() - (i * 7 + j));
-            const dateStr = date.toDateString();
+            const dateStr = date.toISOString().split('T')[0];
             
             weekFocusTime += get()
               .sessions.filter((s) => s.date === dateStr && s.mode === 'work' && s.completed)

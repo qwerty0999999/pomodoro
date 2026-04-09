@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Settings, Bell, Volume2, Zap, RotateCcw, Moon, Sun, Download, X } from 'lucide-react';
+import { Settings, Bell, Volume2, Zap, RotateCcw, Download, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useSettingsStore } from '@/store/settingsStore';
 import { useSessionStore } from '@/store/sessionStore';
@@ -99,10 +99,10 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
         initial={{ opacity: 0, scale: 0.95, y: 10 }}
         animate={isOpen ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.95, y: 10 }}
         transition={{ duration: 0.1 }}
-        className={`fixed lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-full lg:max-w-2xl bottom-20 left-4 right-4 w-auto bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-[51] max-h-[80vh] flex flex-col overflow-hidden ${!isOpen && 'pointer-events-none'
+        className={`fixed lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-full lg:max-w-2xl bottom-20 left-4 right-4 w-auto bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-51 max-h-[80vh] flex flex-col overflow-hidden ${!isOpen && 'pointer-events-none'
           }`}
       >
-        <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-white/10 bg-slate-800">
+        <div className="shrink-0 flex items-center justify-between p-6 border-b border-white/10 bg-slate-800">
           <h3 className="text-xl font-bold flex items-center gap-2">
             <Settings className="w-5 h-5 text-cyan-400" />
             Pengaturan
@@ -305,3 +305,5 @@ export default function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
     </div >
   );
 }
+
+

@@ -4,7 +4,7 @@ interface UseTimerOptions {
   initialMinutes?: number;
   initialSeconds?: number;
   onComplete?: () => void;
-  resetDependency?: any;
+  resetDependency?: unknown;
 }
 
 export const useTimer = ({
@@ -16,14 +16,15 @@ export const useTimer = ({
   const [minutes, setMinutes] = useState(initialMinutes);
   const [seconds, setSeconds] = useState(initialSeconds);
   const [isActive, setIsActive] = useState(false);
+  const [prevResetDep, setPrevResetDep] = useState(resetDependency);
 
-  // Update timer when initialMinutes or resetDependency changes (for mode switching)
-  useEffect(() => {
+  // Sync state when resetDependency changes (Idiomatic React 19 way)
+  if (resetDependency !== prevResetDep) {
+    setPrevResetDep(resetDependency);
     setMinutes(initialMinutes);
     setSeconds(initialSeconds);
     setIsActive(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialMinutes, initialSeconds, resetDependency]);
+  }
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;

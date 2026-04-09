@@ -133,7 +133,7 @@ export default function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
               className="fixed lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 lg:w-full lg:max-w-2xl bottom-20 left-4 right-4 w-auto bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 max-h-[80vh] overflow-hidden flex flex-col"
             >
               {/* Header */}
-              <div className="flex-shrink-0 flex items-center justify-between p-6 border-b border-white/10 bg-slate-800">
+              <div className="shrink-0 flex items-center justify-between p-6 border-b border-white/10 bg-slate-800">
                 <h3 className="text-xl font-bold text-white flex items-center gap-2">
                   <HelpCircle className="w-5 h-5 text-cyan-400" />
                   Bantuan & Tutorial
@@ -207,7 +207,7 @@ export default function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
                             transition={{ delay: idx * 0.05 }}
                             className="flex gap-2 text-sm text-gray-300"
                           >
-                            <span className="text-cyan-400 flex-shrink-0">•</span>
+                            <span className="text-cyan-400 shrink-0">•</span>
                             <span>{tip}</span>
                           </motion.li>
                         ))}
@@ -225,7 +225,7 @@ export default function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
                         transition={{ delay: 0.3 }}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        className="block w-full mt-6 py-3 px-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg text-center transition-all shadow-lg"
+                        className="block w-full mt-6 py-3 px-4 bg-linear-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold rounded-lg text-center transition-all shadow-lg"
                       >
                         ☕ Donasi Sekarang di Saweria
                       </motion.a>
@@ -240,3 +240,5 @@ export default function HelpPanel({ isOpen, onClose }: HelpPanelProps) {
     </div>
   );
 }
+
+

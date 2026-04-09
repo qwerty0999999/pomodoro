@@ -82,7 +82,7 @@ export default function EisenhowerMatrix() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: idx * 0.1 }}
-            className={`p-4 rounded-xl border-2 ${q.borderColor} bg-gradient-to-br ${q.color} max-h-80 flex flex-col`}
+            className={`p-4 rounded-xl border-2 ${q.borderColor} bg-linear-to-br ${q.color} max-h-80 flex flex-col`}
           >
             <div className="mb-3">
               <h3 className="font-bold text-sm">{q.title}</h3>
@@ -104,7 +104,7 @@ export default function EisenhowerMatrix() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => toggleTask(task.id)}
-                      className={`flex-shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition ${task.isCompleted
+                      className={`shrink-0 w-4 h-4 rounded border-2 flex items-center justify-center transition ${task.isCompleted
                         ? 'bg-green-500 border-green-500'
                         : 'border-current border-opacity-50'
                         }`}
@@ -123,7 +123,7 @@ export default function EisenhowerMatrix() {
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => deleteTask(task.id)}
-                      className="flex-shrink-0 p-0.5 opacity-0 group-hover:opacity-100 text-red-400 hover:bg-red-500/20 rounded transition"
+                      className="shrink-0 p-0.5 opacity-0 group-hover:opacity-100 text-red-400 hover:bg-red-500/20 rounded transition"
                     >
                       <Trash2 size={12} />
                     </motion.button>
@@ -169,3 +169,5 @@ export default function EisenhowerMatrix() {
     </div>
   );
 }
+
+
